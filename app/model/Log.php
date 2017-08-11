@@ -7,28 +7,105 @@ class Log {
 	public static function error() { return self::$error; }
 
 
+
+
+	/**
+	<fusedoc>
+		<description>
+			get number of records according to filter and param (if any)
+		</description>
+		<io>
+			<in>
+				<string name="$filter" optional="yes" default="1 = 1" />
+				<array  name="$param"  optional="yes" />
+			</in>
+			<out>
+				<number name="~return~" />
+			</out>
+		</io>
+	</fusedoc>
+	*/
 	public static function count($filter='1 = 1', $param=array()) {
 		return R::count('log', $filter, $param);
 	}
 
 
+
+
+	/**
+	<fusedoc>
+		<description>
+			get all (or specific amount of) records according to filter and param (if any)
+		</description>
+		<io>
+			<in>
+				<string name="$filter" optional="yes" default="1 = 1" />
+				<array  name="$param"  optional="yes" />
+				<number name="$limit"  optional="yes" />
+			</in>
+			<out>
+				<structure name="~return~">
+					<object name="~id~" />
+				</structure>
+			</out>
+		</io>
+	</fusedoc>
+	*/
 	public static function find($filter='1 = 1', $param=array(), $limit='') {
 		if ( !empty($limit) ) $filter .= " LIMIT {$limit} ";
 		return R::find('log', $filter, $param);
 	}
 
 
+
+
+	/**
+	<fusedoc>
+		<description>
+			get first record according to filter and param (if any)
+		</description>
+		<io>
+			<in>
+				<string name="$filter" optional="yes" default="1 = 1" />
+				<array  name="$param"  optional="yes" />
+			</in>
+			<out>
+				<object name="~return~" />
+			</out>
+		</io>
+	</fusedoc>
+	*/
 	public static function findOne($filter='1 = 1', $param=array()) {
 		return R::findOne('log', $filter, $param);
 	}
 
 
+
+
+	/**
+	<fusedoc>
+		<description>
+			get deduped values of specific column according to filter (if any)
+		</description>
+		<io>
+			<in>
+				<string name="$filter" optional="yes" />
+				<array  name="$param"  optional="yes" />
+			</in>
+			<out>
+				<object name="~return~" />
+			</out>
+		</io>
+	</fusedoc>
+	*/
 	public static function getDistinct($column, $filter='') {
 		$sql = "SELECT DISTINCT {$column} FROM log ";
 		if ( !empty($filter) ) $sql .= "WHERE {$filter} ";
 		$sql .= "ORDER BY {$column} ";
 		return R::getAll($sql);
 	}
+
+
 
 
 	/**
