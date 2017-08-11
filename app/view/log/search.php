@@ -1,3 +1,40 @@
+<?php /*
+<fusedoc>
+	<io>
+		<in>
+			<structure name="$xfa">
+				<string name="search" optional="yes" />
+				<string name="reset" optional="yes" />
+			</structure>
+			<number name="$logCount" optional="yes" />
+			<array name="$logUsers" optional="yes">
+				<string name="+" />
+			</array>
+			<array name="$logActions" optional="yes">
+				<string name="+" />
+			</array>
+			<structure name="search" scope="$arguments" optional="yes" comments="submitted search criteria">
+				<string name="datetime_keyword" />
+				<string name="username" />
+				<string name="action" />
+				<string name="entity_id" />
+				<string name="remark_keyword" />
+				<string name="ip_keyword" />
+			</structure>
+		</in>
+		<out>
+			<structure name="search" scope="form" optional="yes" oncondition="xfa.search">
+				<string name="datetime_keyword" />
+				<string name="username" />
+				<string name="action" />
+				<string name="entity_id" />
+				<string name="remark_keyword" />
+				<string name="ip_keyword" />
+			</structure>
+		</out>
+	</io>
+</fusedoc>
+*/ ?>
 <form
 	id="log-search"
 	class="form-horizontal"
@@ -29,10 +66,10 @@
 							class="form-control input-sm <?php if ( !empty($arguments['search']['username']) ) echo 'alert-warning'; ?>"
 						>
 							<option value=""></option>
-							<?php foreach ( $logUsers as $u ) : ?>
-								<?php $selected = ( !empty($arguments['search']['username']) and $arguments['search']['username'] == $u['username'] ); ?>
-								<option value="<?php echo $u['username']; ?>" <?php if ( $selected ) echo 'selected' ?>>
-									<?php echo $u['username']; ?>
+							<?php foreach ( $logUsers as $username ) : ?>
+								<?php $selected = ( !empty($arguments['search']['username']) and $arguments['search']['username'] == $username ); ?>
+								<option value="<?php echo $username; ?>" <?php if ( $selected ) echo 'selected' ?>>
+									<?php echo $username; ?>
 								</option>
 							<?php endforeach; ?>
 						</select>
@@ -45,10 +82,10 @@
 							class="form-control input-sm <?php if ( !empty($arguments['search']['action']) ) echo 'alert-warning'; ?>"
 						>
 							<option value=""></option>
-							<?php foreach ( $logActions as $a ) : ?>
-								<?php $selected = ( !empty($arguments['search']['action']) and $arguments['search']['action'] == $a['action'] ); ?>
-								<option value="<?php echo $a['action']; ?>" <?php if ( $selected ) echo 'selected' ?>>
-									<?php echo $a['action']; ?>
+							<?php foreach ( $logActions as $action ) : ?>
+								<?php $selected = ( !empty($arguments['search']['action']) and $arguments['search']['action'] == $action ); ?>
+								<option value="<?php echo $action; ?>" <?php if ( $selected ) echo 'selected' ?>>
+									<?php echo $action; ?>
 								</option>
 							<?php endforeach; ?>
 						</select>

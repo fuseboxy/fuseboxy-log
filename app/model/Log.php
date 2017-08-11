@@ -93,7 +93,9 @@ class Log {
 				<array  name="$param"  optional="yes" />
 			</in>
 			<out>
-				<object name="~return~" />
+				<array name="~return~">
+					<string name="+" />
+				</array>
 			</out>
 		</io>
 	</fusedoc>
@@ -101,8 +103,8 @@ class Log {
 	public static function getDistinct($column, $filter='', $param=array()) {
 		$sql = "SELECT DISTINCT {$column} FROM log ";
 		if ( !empty($filter) ) $sql .= "WHERE {$filter} ";
-		$sql .= "ORDER BY {$column} ";
-		return R::getAll($sql, $param);
+		$sql .= "ORDER BY {$column} ASC";
+		return R::getCol($sql, $param);
 	}
 
 
