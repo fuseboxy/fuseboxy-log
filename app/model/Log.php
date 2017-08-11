@@ -98,11 +98,11 @@ class Log {
 		</io>
 	</fusedoc>
 	*/
-	public static function getDistinct($column, $filter='') {
+	public static function getDistinct($column, $filter='', $param=array()) {
 		$sql = "SELECT DISTINCT {$column} FROM log ";
 		if ( !empty($filter) ) $sql .= "WHERE {$filter} ";
 		$sql .= "ORDER BY {$column} ";
-		return R::getAll($sql);
+		return R::getAll($sql, $param);
 	}
 
 
