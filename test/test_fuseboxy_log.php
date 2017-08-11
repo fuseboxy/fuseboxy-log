@@ -48,21 +48,21 @@ class TestFuseboxyLog extends UnitTestCase {
 			$this->assertTrue( !empty($id) );
 		}
 		// count all records
-		$count = Log::count();
-		$this->assertTrue( $count == 10 );
+		$result = Log::count();
+		$this->assertTrue( $result == 10 );
 		// count with filter
-		$count = Log::count('action = ?', array('SELECT_RECORD'));
-		$this->assertTrue( $count == 4 );
-		$count = Log::count('datetime BETWEEN ? AND ?', array('2000-01-01T00:00:00', '2000-06-30T23:59:59'));
-		$this->assertTrue( $count == 6 );
-		$count = Log::count('action IN (?,?) AND username = ?', array('INSERT_RECORD', 'UPDATE_RECORD', 'unit-test'));
-		$this->assertTrue( $count == 2);
+		$result = Log::count('action = ?', array('SELECT_RECORD'));
+		$this->assertTrue( $result == 4 );
+		$result = Log::count('datetime BETWEEN ? AND ?', array('2000-01-01T00:00:00', '2000-06-30T23:59:59'));
+		$this->assertTrue( $result == 6 );
+		$result = Log::count('action IN (?,?) AND username = ?', array('INSERT_RECORD', 'UPDATE_RECORD', 'unit-test'));
+		$this->assertTrue( $result == 2);
 		// count with filter (no param)
-		$count = Log::count(" action = 'SELECT_RECORD' ");
-		$this->assertTrue( $count == 4 );
-		// no valid record
-		$count = Log::count('action = ?', array('LOGIN'));
-		$this->assertTrue( $count == 0 );
+		$result = Log::count(" action = 'SELECT_RECORD' ");
+		$this->assertTrue( $result == 4 );
+		// no record matched
+		$result = Log::count('action = ?', array('LOGIN'));
+		$this->assertTrue( $result == 0 );
 		// clean-up
 		R::nuke();
 	}
@@ -121,6 +121,9 @@ class TestFuseboxyLog extends UnitTestCase {
 		$this->assertTrue( count($result) == 2 );
 		$result = implode(',', $result);
 		$this->assertTrue( $result == 'foo-bar,unit-test' );
+		// no record matched
+		$result = Log::getDistinct('datetime', 'action = ?', array('LOGIN'));
+		$this->assertTrue( count($result) == 0 );
 		// clean-up
 		R::nuke();
 	}
