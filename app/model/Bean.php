@@ -1,5 +1,13 @@
-<?php
-// generic bean helper
+<?php /*
+<fusedoc>
+	<description>
+		generic bean helper
+	</description>
+	<history version="1.0">
+		- first commit
+	</history>
+</fusedoc>
+*/
 class Bean {
 
 
