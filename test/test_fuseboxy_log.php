@@ -205,7 +205,69 @@ class TestFuseboxyLog extends UnitTestCase {
 
 
 	function test__Log__write(){
-
+		// create dummy users
+		$data = array(
+			array('username' => 'foo-bar', 'name' => 'Foo Bar', 'disabled' => 0),
+			array('username' => 'abc-xyz', 'name' => 'ABC XYZ', 'disabled' => 0),
+		);
+		foreach ( $data as $i => $item ) {
+			$bean = R::dispense('user');
+			$bean->import($item);
+			$id = R::store($bean);
+			$this->assertTrue( !empty($id) );
+		}
+		// no action specified
+		$result = Log::write('');
+		$this->assertFalse( $result );
+		$this->assertPattern('/log \[action\] was not specified/i', Log::error());
+		// only action specified
+		$id = Log::write('UNIT_TEST_111');
+		$this->assertTrue( !empty($id) );
+		$bean = R::load('log', $id);
+		$this->assertTrue( $bean->action == 'UNIT_TEST_111' );
+		$this->assertTrue( !empty($bean->datetime) );
+		$this->assertTrue(  empty($bean->username) );
+		$this->assertTrue(  empty($bean->sim_user) );
+		// write log after login
+		$userLogin = Auth::login('foo-bar', Auth::SKIP_PASSWORD_CHECK);
+		$this->assertTrue( $userLogin );
+		$id = Log::write('UNIT_TEST_222');
+		$this->assertTrue( !empty($id) );
+		$bean = R::load('log', $id);
+		$this->assertTrue( $bean->action == 'UNIT_TEST_222' );
+		$this->assertTrue( $bean->username == 'foo-bar' );
+		$this->assertTrue( empty($bean->sim_user) );
+		// write log with user-sim
+		$userSim = Sim::start('abc-xyz');
+		$this->assertTrue( $userSim );
+		$id = Log::write('UNIT_TEST_333');
+		$this->assertTrue( !empty($id) );
+		$bean = R::load('log', $id);
+		$this->assertTrue( $bean->action == 'UNIT_TEST_333' );
+		$this->assertTrue( $bean->username == 'foo-bar' );
+		$this->assertTrue( $bean->sim_user == 'abc-xyz' );
+		// (sign out dummy user)
+		$userSimEnd = Sim::end();
+		$this->assertTrue($userSimEnd);
+		$userLogout = Auth::logout();
+		$this->assertTrue($userLogout);
+		// specify everything
+		$id = Log::write(array(
+			'action'   => 'UNIT_TEST_999',
+			'datetime' => '1999-12-31T23:59:59',
+			'username' => 'FooBar',
+			'sim_user' => 'abcXYZ',
+			'remark'   => 'Everything is specified',
+		));
+		$this->assertTrue( !empty($id) );
+		$bean = R::load('log', $id);
+		$this->assertTrue( $bean->action   == 'UNIT_TEST_999' );
+		$this->assertTrue( $bean->datetime == '1999-12-31T23:59:59' );
+		$this->assertTrue( $bean->username == 'FooBar' );
+		$this->assertTrue( $bean->sim_user == 'abcXYZ' );
+		$this->assertTrue( $bean->remark   == 'Everything is specified' );
+		// clean-up
+		R::nuke();
 	}
 
 
