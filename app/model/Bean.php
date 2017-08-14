@@ -11,7 +11,31 @@
 class Bean {
 
 
-	// compare two objects and return string showing the differences
+
+
+	// get latest error message
+	private static $error;
+	public static function error() { return self::$error; }
+
+
+
+
+	/**
+	<fusedoc>
+		<description>
+			compare two objects and return string showing the differences
+		</description>
+		<io>
+			<in>
+				<object name="$bean1" />
+				<object name="$bean2" />
+			</in>
+			<out>
+				<string name="~return~" />
+			</out>
+		</io>
+	</fusedoc>
+	*/
 	public static function diff($bean1, $bean2) {
 		$result = '';
 		// compare each properties of beans
@@ -33,6 +57,25 @@ class Bean {
 	}
 
 
+
+
+	/**
+	<fusedoc>
+		<description>
+			get columns of bean
+		</description>
+		<io>
+			<in>
+				<object name="$bean" />
+			</in>
+			<out>
+				<array name="~return~">
+					<string name="+" />
+				</array>
+			</out>
+		</io>
+	</fusedoc>
+	*/
 	public static function getColumns($bean) {
 		$result = array();
 		// simple value properties only
@@ -47,7 +90,30 @@ class Bean {
 	}
 
 
-	// transform records into multi-level array
+
+
+	/**
+	<fusedoc>
+		<description>
+			transform records into multi-level array
+		</description>
+		<io>
+			<in>
+				<string name="$groupColumn" />
+				<structure name="$beans">
+					<object name="~id~" />
+				</structure>
+			</in>
+			<out>
+				<structure name="~return~">
+					<structure name="~groupColumnValue~">
+						<object name="~id~" />
+					</structure>
+				</structure>
+			</out>
+		</io>
+	</fusedoc>
+	*/
 	public static function groupBy($groupColumn, $beans) {
 		// empty result container
 		$result = array();
@@ -65,6 +131,23 @@ class Bean {
 	}
 
 
+
+
+	/**
+	<fusedoc>
+		<description>
+			convert bean to string
+		</description>
+		<io>
+			<in>
+				<object name="$bean" />
+			</in>
+			<out>
+				<string name="~return~" />
+			</out>
+		</io>
+	</fusedoc>
+	*/
 	public static function toString($bean) {
 		$result = '';
 		$columns = self::getColumns($bean);
@@ -78,4 +161,5 @@ class Bean {
 
 
 
-}
+
+} // Bean
