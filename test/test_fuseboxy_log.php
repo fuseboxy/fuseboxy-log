@@ -27,9 +27,12 @@ class TestFuseboxyLog extends UnitTestCase {
 			include __DIR__.'/utility-log/redbeanphp/4.3.3/rb.php';
 			include __DIR__.'/utility-log/config/rb_config.php';
 		}
+		if ( !class_exists('phpQuery') ) {
+			include __DIR__.'/utility-log/phpquery/0.9.5/phpQuery.php';
+		}
 	}
 
-
+/*
 	function test__Log__count(){
 		// create dummy records
 		$data = array(
@@ -425,13 +428,133 @@ class TestFuseboxyLog extends UnitTestCase {
 		// clean-up
 		R::nuke();
 	}
-
+*/
 
 	function test__logController__index(){
+		global $fusebox;
+		Framework::createAPIObject();
+		Framework::loadConfig();
+		Framework::setMyself();
+		$fusebox->action = 'index';
+		$fusebox->config['appPath'] = dirname(__DIR__).'/app/';
+		// create dummy user
+		$data = array(
+			array('username' => 'super',  'role' => 'SUPER'),
+			array('username' => 'admin',  'role' => 'ADMIN'),
+			array('username' => 'normal', 'role' => 'USER' ),
+		);
+		foreach ( $data as $i => $item ) {
+			$userBean = R::dispense('user');
+			$userBean->import($item);
+			$userID = R::store($userBean);
+			$this->assertTrue( !empty($userID) );
+		}
+		// create dummy records
+		$data = array(
+			array('action' => 'SELECT_RECORD', 'datetime' => '2000-01-01T01:00:00', 'username' => 'unit-test', 'sim_user' => null,      'entity_type' => null,       'entity_id' => null, 'remark' => 'something good',  'ip' => '127.0.0.1'),
+			array('action' => 'SELECT_RECORD', 'datetime' => '2000-02-02T02:00:00', 'username' => 'unit-test', 'sim_user' => null,      'entity_type' => null,       'entity_id' => null, 'remark' => 'something good',  'ip' => '127.0.0.1'),
+			array('action' => 'SELECT_RECORD', 'datetime' => '2000-03-03T03:00:00', 'username' => 'unit-test', 'sim_user' => null,      'entity_type' => null,       'entity_id' => null, 'remark' => 'something good',  'ip' => '127.0.0.1'),
+			array('action' => 'SELECT_RECORD', 'datetime' => '2000-04-04T04:00:00', 'username' => 'unit-test', 'sim_user' => 'foo-bar', 'entity_type' => null,       'entity_id' => null, 'remark' => 'something good',  'ip' => '127.0.0.1'),
+			array('action' => 'INSERT_RECORD', 'datetime' => '2000-05-05T05:00:00', 'username' => 'unit-test', 'sim_user' => 'foo-bar', 'entity_type' => 'whatever', 'entity_id' => 1,    'remark' => 'something bad',   'ip' => '127.0.0.1'),
+			array('action' => 'INSERT_RECORD', 'datetime' => '2000-06-06T06:00:00', 'username' => 'unit-test', 'sim_user' => 'foo-bar', 'entity_type' => 'whatever', 'entity_id' => 2,    'remark' => 'something bad',   'ip' => '127.0.0.1'),
+			array('action' => 'INSERT_RECORD', 'datetime' => '2000-07-07T07:00:00', 'username' => 'foo-bar',   'sim_user' => 'foo-bar', 'entity_type' => 'whatever', 'entity_id' => 3,    'remark' => 'something bad',   'ip' => '127.0.0.1'),
+			array('action' => 'UPDATE_RECORD', 'datetime' => '2000-08-08T08:00:00', 'username' => 'foo-bar',   'sim_user' => 'foo-bar', 'entity_type' => 'whatever', 'entity_id' => 4,    'remark' => 'nothing special', 'ip' => '127.0.0.1'),
+			array('action' => 'UPDATE_RECORD', 'datetime' => '2000-09-09T09:00:00', 'username' => 'foo-bar',   'sim_user' => 'foo-bar', 'entity_type' => 'whatever', 'entity_id' => 5,    'remark' => 'nothing special', 'ip' => '127.0.0.1'),
+			array('action' => 'DELETE_RECORD', 'datetime' => '2000-10-10T10:00:00', 'username' => 'foo-bar',   'sim_user' => 'foo-bar', 'entity_type' => 'whatever', 'entity_id' => 6,    'remark' => 'nothing special', 'ip' => '127.0.0.1'),
+		);
+		foreach ( $data as $i => $item ) {
+			$bean = R::dispense('log');
+			$bean->import($item);
+			$id = R::store($bean);
+			$this->assertTrue( !empty($id) );
+		}
+		// only accessible after login
+		try {
+			$hasRedirect = false;
+			ob_start();
+			include dirname(__DIR__).'/app/controller/log_controller.php';
+			$output = ob_get_clean();
+		} catch (Exception $e) {
+			$output = $e->getMessage();
+			$hasRedirect = ( $e->getCode() == Framework::FUSEBOX_REDIRECT );
+			$this->assertPattern('/fuseaction=auth/i', $e->getMessage());
+		}
+		$this->assertTrue($hasRedirect);
+		// only accessible by super or admin
+		$loginResult = Auth::login('normal', Auth::SKIP_PASSWORD_CHECK);
+		$this->assertTrue( $loginResult );
+		try {
+			$hasRedirect = false;
+			ob_start();
+			include dirname(__DIR__).'/app/controller/log_controller.php';
+			$output = ob_get_clean();
+		} catch (Exception $e) {
+			$output = $e->getMessage();
+			$hasRedirect = ( $e->getCode() == Framework::FUSEBOX_REDIRECT );
+			$this->assertPattern("/fuseaction={$fusebox->config['defaultCommand']}/i", $e->getMessage());
+		}
+		$this->assertTrue($hasRedirect);
+		Auth::logout();
+		// access page successfully
+		$loginResult = Auth::login('admin', Auth::SKIP_PASSWORD_CHECK);
+		$this->assertTrue( $loginResult );
+		try {
+			$hasError = false;
+			ob_start();
+			include dirname(__DIR__).'/app/controller/log_controller.php';
+			$output = ob_get_clean();
+		} catch (Exception $e) {
+			$hasError = true;
+		}
+		$this->assertFalse($hasError);
+		$this->assertNoPattern('/PHP ERROR/i', $output);
+		Auth::logout();
+		// check page elements
+		$doc = phpQuery::newDocument($output);
+		$this->assertTrue( pq('#log-header')->length == 1 );
+		$this->assertTrue( pq('#log-search')->length == 1 );
+		$this->assertTrue( pq('.log-row')->length != 0 );
+		// clean-up
+		$fusebox = null;
+		R::nuke();
 	}
 
 
 	function test__logController__search(){
+		global $fusebox;
+		Framework::createAPIObject();
+		Framework::loadConfig();
+		Framework::setMyself();
+		$fusebox->action = 'search';
+		// dummy arguments
+		$arguments['search'] = array(
+			'username' => 'foo-bar',
+			'keyword'  => 'UNIT_TEST',
+		);
+		// create dummy user
+		$userBean = R::dispense('user');
+		$userBean->import(array('username' => 'admin',  'role' => 'ADMIN'));
+		$userID = R::store($userBean);
+		$this->assertTrue( !empty($userID) );
+		// redirect to url with query-string
+		$loginResult = Auth::login('admin', Auth::SKIP_PASSWORD_CHECK);
+		$this->assertTrue( $loginResult );
+		try {
+			$hasRedirect = false;
+			ob_start();
+			include dirname(__DIR__).'/app/controller/log_controller.php';
+			$output = ob_get_clean();
+		} catch (Exception $e) {
+			$output = $e->getMessage();
+			$hasRedirect = ( $e->getCode() == Framework::FUSEBOX_REDIRECT );
+			$this->assertPattern('/'.urlencode("search[username]").'=foo-bar/i', $e->getMessage());
+			$this->assertPattern('/'.urlencode("search[keyword]").'=UNIT_TEST/i', $e->getMessage());
+		}
+		$this->assertTrue($hasRedirect);
+		Auth::logout();
+		// clean-up
+		$fusebox = null;
+		R::nuke();
 	}
 
 

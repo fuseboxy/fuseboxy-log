@@ -66,8 +66,12 @@ switch ($fusebox->action) :
 		// breadcrumb
 		$arguments['breadcrumb'] = array('System Log');
 		// layout
-		$layout['width'] = 'full';
-		include F::config('appPath').'view/global/layout.php';
+		if ( Framework::$mode == Framework::FUSEBOX_UNIT_TEST ) {
+			echo $layout['content'];
+		} else {
+			$layout['width'] = 'full';
+			include F::config('appPath').'view/global/layout.php';
+		}
 		break;
 
 
