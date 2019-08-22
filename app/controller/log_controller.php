@@ -64,7 +64,7 @@ switch ($fusebox->action) :
 		foreach ( $logs as $bean ) include F::config('appPath').'view/log/row.php';
 		$layout['content'] = ob_get_clean();
 		// breadcrumb
-		$arguments['breadcrumb'] = array('System Log');
+		$arguments['breadcrumb'] = array('Audit Log');
 		// layout
 		if ( Framework::$mode == Framework::FUSEBOX_UNIT_TEST ) {
 			echo $layout['content'];
