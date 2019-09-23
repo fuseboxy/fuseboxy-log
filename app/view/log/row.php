@@ -24,20 +24,23 @@
 	<table class="table table-hover table-sm mb-0">
 		<tbody>
 				<td width="7%" class="col-id"><?php echo $bean->id; ?></td>
-				<td width="12%" class="col-datetime">
+				<td width="13%" class="col-datetime">
 					<div class="col-date"><?php echo date('Y-m-d', strtotime($bean->datetime)); ?></div>
 					<div class="col-time small text-muted"><?php echo date('H:i:s', strtotime($bean->datetime)); ?></div>
 				</td>
-				<td width="12%" class="col-username-sim_user">
+				<td width="13%" class="col-username-sim_user">
 					<div class="col-username"><?php echo $bean->username; ?></div>
 					<div class="col-sim_user small text-muted"><?php echo $bean->sim_user; ?></div>
 				</td>
-				<td width="12%" class="col-action"><?php echo $bean->action; ?></td>
-				<td width="12%" class="col-entity_id-entity_type">
+				<td width="13%" class="col-action-ip">
+					<div class="col-action"><?php echo $bean->action; ?></div>
+					<div class="col-ip small text-muted"><?php echo $bean->ip; ?></div>
+				</td>
+				<td width="13%" class="col-entity_id-entity_type">
 					<div class="col-entity_id"><?php echo $bean->entity_id; ?></div>
 					<div class="col-entity_type small text-muted"><?php echo $bean->entity_type; ?></div>
 				</td>
-				<td width="25%" class="col-remark"><?php
+				<td width="30%" class="col-remark"><?php
 					$str = $bean->remark;
 					if ( !empty($arguments['search']['remark_keyword']) ) {
 						$startPos = stripos($str, $arguments['search']['remark_keyword']);
@@ -47,7 +50,6 @@
 					}
 					echo nl2br($str);
 				?></td>
-				<td width="10%" class="col-ip"><?php echo $bean->ip; ?></td>
 				<td class="col-button text-right"><?php include F::config('appPath').'view/scaffold/row.button.php'; ?></td>
 			</tr>
 		</tbody>
