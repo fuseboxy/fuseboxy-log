@@ -1,10 +1,4 @@
-<?php /*
-<fusedoc>
-	<history version="1.0">
-		- first commit
-	</history>
-</fusedoc>
-*/
+<?php
 class Log {
 
 
