@@ -19,6 +19,7 @@ if ( !empty($arguments['filterField']) ) {
 					'url' => F::url(F::command('controller')."&filterField={$arguments['filterField']}&filterValue={$item}"),
 					'active' => ( isset($arguments['filterValue']) and $arguments['filterValue'] == $item ),
 					'class' => 'small',
+					'remark' => R::count('log', " IFNULL({$arguments['filterField']}, '') = ?", array( !empty($item) ? $item : '' )),
 				);
 			}
 			// done!
@@ -38,7 +39,7 @@ $tabLayout = array(
 	'position' => 'left',
 	'header' => '<h3>Log</h3>',
 	'nav' => array(
-		array('name' => 'All',       'url' => F::url($fusebox->controller),                             'active' => empty($arguments['filterField'])),
+		array('name' => 'All', 'url' => F::url($fusebox->controller), 'active' => empty($arguments['filterField']), 'remark' => R::count('log')),
 //		array('name' => 'By Month',  'url' => F::url("{$fusebox->controller}&filterField=month"),       'active' => ( isset($arguments['filterField']) and $arguments['filterField'] == 'month' )),
 		array('name' => 'By User',   'url' => F::url("{$fusebox->controller}&filterField=username"),    'active' => ( isset($arguments['filterField']) and $arguments['filterField'] == 'username' )),
 		array('name' => 'By Action', 'url' => F::url("{$fusebox->controller}&filterField=action"),      'active' => ( isset($arguments['filterField']) and $arguments['filterField'] == 'action' )),
