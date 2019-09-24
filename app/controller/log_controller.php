@@ -20,8 +20,16 @@ $scaffold = array(
 	'allowToggle' => false,
 	'allowDelete' => Auth::activeUserInRole('SUPER'),
 	'layoutPath' => F::config('appPath').'view/log/layout.php',
-//	'listFilter' => array('type = ?', array($_SESSION['logController__filterBy'])),
-
+	'listFilter' => call_user_func(function(){
+		$result = array();
+		if ( !empty($_SESSION['logController__filterField']) ) {
+			$result[] = "IFNULL({$_SESSION['logController__filterField']}, '') = ?";
+		}
+		if ( isset($_SESSION['logController__filterValue']) ) {
+			$result[] = array($_SESSION['logController__filterValue']);
+		}
+		return $result;
+	}),
 	'listOrder' => 'ORDER BY datetime DESC',
 	'listField' => array(
 		'id' => '7%',
