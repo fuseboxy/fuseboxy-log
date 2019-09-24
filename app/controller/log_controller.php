@@ -20,16 +20,10 @@ $scaffold = array(
 	'allowToggle' => false,
 	'allowDelete' => Auth::activeUserInRole('SUPER'),
 	'layoutPath' => F::config('appPath').'view/log/layout.php',
-	'listFilter' => call_user_func(function(){
-		$result = array();
-		if ( !empty($_SESSION['logController__filterField']) ) {
-			$result[] = "IFNULL({$_SESSION['logController__filterField']}, '') = ?";
-		}
-		if ( isset($_SESSION['logController__filterValue']) ) {
-			$result[] = array($_SESSION['logController__filterValue']);
-		}
-		return $result;
-	}),
+	'listFilter' => !empty($_SESSION['logController__filterField']) ? array(
+		" IFNULL({$_SESSION['logController__filterField']}, '') = ? ",
+		array( isset($_SESSION['logController__filterValue']) ? $_SESSION['logController__filterValue'] : null ),
+	) : null,
 	'listOrder' => 'ORDER BY datetime DESC',
 	'listField' => array(
 		'id' => '7%',
