@@ -3,12 +3,10 @@ F::redirect('auth', !Auth::user());
 F::redirect(F::config('defaultCommand'), !Auth::activeUserInRole('SUPER,ADMIN'));
 
 
-// change selected filter
-if ( isset($arguments['filter']) ) {
-	$arr = explode(':', $arguments['filter'], 2);
-	$arr = array_map('trim', $arr);
-	$_SESSION['logController__filterField'] = !empty($arr[0]) ? $arr[0] : '';
-	$_SESSION['logController__filterValue'] = !empty($arr[1]) ? $arr[1] : '';
+// default filter value
+if ( isset($arguments['filterField']) and !isset($arguments['filterValue']) ) {
+	$arr = Log::getDistinct($arguments['filterField']);
+	$arguments['filterValue'] = isset($arr[0]) ? $arr[0] : false;
 }
 
 
@@ -20,9 +18,9 @@ $scaffold = array(
 	'allowToggle' => false,
 	'allowDelete' => Auth::activeUserInRole('SUPER'),
 	'layoutPath' => F::config('appPath').'view/log/layout.php',
-	'listFilter' => !empty($_SESSION['logController__filterField']) ? array(
-		" IFNULL({$_SESSION['logController__filterField']}, '') = ? ",
-		array( isset($_SESSION['logController__filterValue']) ? $_SESSION['logController__filterValue'] : null ),
+	'listFilter' => isset($arguments['filterField']) ? array(
+		" IFNULL({$arguments['filterField']}, '') = ? ",
+		array( $arguments['filterValue'] ),
 	) : null,
 	'listOrder' => 'ORDER BY datetime DESC',
 	'listField' => array(
