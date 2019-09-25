@@ -6,7 +6,10 @@ F::redirect(F::config('defaultCommand'), !Auth::activeUserInRole('SUPER,ADMIN'))
 // default filter value
 if ( isset($arguments['filterField']) and !isset($arguments['filterValue']) ) {
 	$arr = Log::getDistinct($arguments['filterField']);
-	$arguments['filterValue'] = isset($arr[0]) ? $arr[0] : false;
+	if ( stripos($arguments['filterField'], 'datetime') !== false ) {
+		$arr = array_reverse($arr);
+	}
+	$arguments['filterValue'] = isset($arr[0]) ? $arr[0] : '';
 }
 
 
@@ -20,7 +23,7 @@ $scaffold = array(
 	'layoutPath' => F::config('appPath').'view/log/layout.php',
 	'listFilter' => isset($arguments['filterField']) ? array(
 		" IFNULL({$arguments['filterField']}, '') = ? ",
-		array( $arguments['filterValue'] ),
+		array($arguments['filterValue']),
 	) : null,
 	'listOrder' => 'ORDER BY datetime DESC',
 	'listField' => array(

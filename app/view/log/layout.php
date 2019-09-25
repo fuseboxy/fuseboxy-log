@@ -7,19 +7,18 @@ if ( !empty($arguments['filterField']) ) {
 		'nav' => call_user_func(function($arguments){
 			$menus = array();
 			// get value for filter
-			if ( $arguments['filterField'] == 'month' ) {
-				$items = array_reverse( Log::getDistinct('DATE_FORMAT(datetime, "%Y-%m")') );
-			} else {
-				$items = Log::getDistinct($arguments['filterField']);
+			$arr = Log::getDistinct($arguments['filterField']);
+			if ( stripos($arguments['filterField'], 'datetime') !== false ) {
+				$arr = array_reverse($arr);
 			}
 			// put into menu
-			foreach ( $items as $item ) {
+			foreach ( $arr as $item ) {
 				$menus[] = array(
 					'name' => empty($item) ? '<em>(empty)</em>' : $item,
 					'url' => F::url(F::command('controller')."&filterField={$arguments['filterField']}&filterValue={$item}"),
 					'active' => ( isset($arguments['filterValue']) and $arguments['filterValue'] == $item ),
+					'remark' => R::count('log', " IFNULL({$arguments['filterField']},'') = ? ", array( empty($item) ? '' : $item )),
 					'class' => 'small',
-					'remark' => R::count('log', " IFNULL({$arguments['filterField']}, '') = ?", array( !empty($item) ? $item : '' )),
 				);
 			}
 			// done!
@@ -40,9 +39,9 @@ $tabLayout = array(
 	'header' => '<h3>Log</h3>',
 	'nav' => array(
 		array('name' => 'All', 'url' => F::url($fusebox->controller), 'active' => empty($arguments['filterField']), 'remark' => R::count('log')),
-//		array('name' => 'By Month',  'url' => F::url("{$fusebox->controller}&filterField=month"),       'active' => ( isset($arguments['filterField']) and $arguments['filterField'] == 'month' )),
-		array('name' => 'By User',   'url' => F::url("{$fusebox->controller}&filterField=username"),    'active' => ( isset($arguments['filterField']) and $arguments['filterField'] == 'username' )),
-		array('name' => 'By Action', 'url' => F::url("{$fusebox->controller}&filterField=action"),      'active' => ( isset($arguments['filterField']) and $arguments['filterField'] == 'action' )),
+		array('name' => 'By Month', 'url' => F::url("{$fusebox->controller}&filterField=DATE_FORMAT(datetime, '%Y-%m')"), 'active' => ( isset($arguments['filterField']) and $arguments['filterField'] == "DATE_FORMAT(datetime, '%Y-%m')")),
+		array('name' => 'By User', 'url' => F::url("{$fusebox->controller}&filterField=username"), 'active' => ( isset($arguments['filterField']) and $arguments['filterField'] == 'username' )),
+		array('name' => 'By Action', 'url' => F::url("{$fusebox->controller}&filterField=action"), 'active' => ( isset($arguments['filterField']) and $arguments['filterField'] == 'action' )),
 		array('name' => 'By Entity', 'url' => F::url("{$fusebox->controller}&filterField=entity_type"), 'active' => ( isset($arguments['filterField']) and $arguments['filterField'] == 'entity_type' )),
 //		array('name' => 'By Remark', 'url' => F::url("{$fusebox->controller}&filterField=remark")),
 	),
