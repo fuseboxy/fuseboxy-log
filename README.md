@@ -1,8 +1,8 @@
-Fuseboxy Log
-============
+Fuseboxy Log (v2.x)
+===================
 
-
-[dependencies]
-Fuseboxy Framework Core
-Global Layout
-RedBeanPHP (3.x or higher)
+[Dependencies]
+Fuseboxy Framework Core (1.0.6 or higher)
+Fuseboxy Scaffold (2.x or higher)
+Fuseboxy Layout (2.x or higher)
+RedBeanPHP (5.x or higher)
