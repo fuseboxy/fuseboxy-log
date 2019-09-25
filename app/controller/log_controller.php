@@ -4,11 +4,10 @@ F::redirect(F::config('defaultCommand'), !Auth::activeUserInRole('SUPER,ADMIN'))
 
 
 // default filter value
-if ( isset($arguments['filterField']) and !isset($arguments['filterValue']) ) {
+if ( isset($arguments['filterField']) and !isset($arguments['filterValue']) and $arguments['filterField'] != 'remark' ) {
 	$arr = Log::getDistinct($arguments['filterField']);
-	if ( stripos($arguments['filterField'], 'datetime') !== false ) {
-		$arr = array_reverse($arr);
-	}
+	F::error(Log::error(), $arr === false);
+	if ( stripos($arguments['filterField'], 'datetime') !== false ) $arr = array_reverse($arr);
 	$arguments['filterValue'] = isset($arr[0]) ? $arr[0] : '';
 }
 
@@ -21,10 +20,15 @@ $scaffold = array(
 	'allowToggle' => false,
 	'allowDelete' => Auth::activeUserInRole('SUPER'),
 	'layoutPath' => F::config('appPath').'view/log/layout.php',
-	'listFilter' => isset($arguments['filterField']) ? array(
-		" IFNULL({$arguments['filterField']}, '') = ? ",
-		array($arguments['filterValue']),
-	) : null,
+	'listFilter' => call_user_func(function($arguments){
+		if ( isset($arguments['filterField']) and $arguments['filterField'] == 'remark' and !empty($arguments['filterValue']) ) {
+			return array(" {$arguments['filterField']} LIKE ? ", array('%'.trim($arguments['filterValue']).'%'));
+		} elseif ( isset($arguments['filterField']) and $arguments['filterField'] != 'remark' and isset($arguments['filterValue']) ) {
+			return array(" IFNULL({$arguments['filterField']}, '') = ? ", array($arguments['filterValue']));
+		} else {
+			return false;
+		}
+	}, $arguments),
 	'listOrder' => 'ORDER BY datetime DESC',
 	'listField' => array(
 		'id' => '7%',

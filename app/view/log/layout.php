@@ -4,14 +4,31 @@ if ( !empty($arguments['filterField']) ) {
 	$tabLayout = array(
 		'style' => 'pills',
 		'position' => 'left',
+		'header' => call_user_func(function($arguments){
+			if ( $arguments['filterField'] != 'remark' ) {
+				return false;
+			}
+			// get record count
+			if ( !empty(Scaffold::$config['listFilter']) ) {
+				$totalRecordCount = R::count('log', Scaffold::$config['listFilter'][0], Scaffold::$config['listFilter'][1]);
+			}
+			// search form
+			ob_start();
+			include F::config('appPath').'view/log/search.php';
+			return ob_get_clean();
+		}, $arguments),
 		'nav' => call_user_func(function($arguments){
-			$menus = array();
+			if ( $arguments['filterField'] == 'remark' ) {
+				return false;
+			}
 			// get value for filter
 			$arr = Log::getDistinct($arguments['filterField']);
+			F::error(Log::error(), $arr === false);
 			if ( stripos($arguments['filterField'], 'datetime') !== false ) {
 				$arr = array_reverse($arr);
 			}
 			// put into menu
+			$menus = array();
 			foreach ( $arr as $item ) {
 				$menus[] = array(
 					'name' => empty($item) ? '<em>(empty)</em>' : $item,
@@ -32,6 +49,8 @@ if ( !empty($arguments['filterField']) ) {
 }
 
 
+
+
 // tab layout : config
 $tabLayout = array(
 	'style' => 'tabs',
@@ -43,13 +62,15 @@ $tabLayout = array(
 		array('name' => 'By User', 'url' => F::url("{$fusebox->controller}&filterField=username"), 'active' => ( isset($arguments['filterField']) and $arguments['filterField'] == 'username' )),
 		array('name' => 'By Action', 'url' => F::url("{$fusebox->controller}&filterField=action"), 'active' => ( isset($arguments['filterField']) and $arguments['filterField'] == 'action' )),
 		array('name' => 'By Entity', 'url' => F::url("{$fusebox->controller}&filterField=entity_type"), 'active' => ( isset($arguments['filterField']) and $arguments['filterField'] == 'entity_type' )),
-//		array('name' => 'By Remark', 'url' => F::url("{$fusebox->controller}&filterField=remark")),
+		array('name' => 'By Remark', 'url' => F::url("{$fusebox->controller}&filterField=remark"), 'active' => ( isset($arguments['filterField']) and $arguments['filterField'] == 'remark' )),
 	),
 );
 // tab layout : display
 ob_start();
 include F::config('appPath').'view/global/tab.php';
 $layout['content'] = ob_get_clean();
+
+
 
 
 // global layout

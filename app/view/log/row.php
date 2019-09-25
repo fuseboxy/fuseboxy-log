@@ -12,9 +12,8 @@
 				<string name="remark" />
 				<string name="ip" />
 			</object>
-			<structure name="search" scope="$arguments" optional="yes">
-				<string name="remark_keyword" optional="yes" />
-			</structure>
+			<string name="filterField" scope="$arguments" optional="yes" />
+			<string name="filterValue" scope="$arguments" optional="yes" />
 		</in>
 		<out />
 	</io>
@@ -42,9 +41,9 @@
 				</td>
 				<td width="30%" class="col-remark"><?php
 					$str = $bean->remark;
-					if ( !empty($arguments['search']['remark_keyword']) ) {
-						$startPos = stripos($str, $arguments['search']['remark_keyword']);
-						$endPos = stripos($str, $arguments['search']['remark_keyword']) + strlen($arguments['search']['remark_keyword']);
+					if ( isset($arguments['filterField']) and $arguments['filterField'] == 'remark' and !empty($arguments['filterValue']) ) {
+						$startPos = stripos($str, $arguments['filterValue']);
+						$endPos = stripos($str, $arguments['filterValue']) + strlen($arguments['filterValue']);
 						$str = substr($str, 0, $endPos).'</mark>'.substr($str, $endPos);
 						$str = substr($str, 0, $startPos).'<mark>'.substr($str, $startPos);
 					}
