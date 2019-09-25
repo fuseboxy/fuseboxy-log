@@ -16,6 +16,7 @@ class Log {
 		</description>
 		<io>
 			<in>
+				<string name="$column" comments="reject remark column; handle datetime specially; handle all others normally" />
 				<string name="$filter" optional="yes" />
 				<array  name="$param"  optional="yes" />
 			</in>
@@ -27,10 +28,20 @@ class Log {
 		</io>
 	</fusedoc>
 	*/
-	public static function getDistinct($column, $filter='', $param=array()) {
-		$sql = "SELECT DISTINCT {$column} FROM log ";
-		if ( !empty($filter) ) $sql .= "WHERE {$filter} ";
-		$sql .= "ORDER BY {$column} ASC";
+	public static function getDistinct($column, $filter='1=1', $param=array()) {
+		// validation
+		if ( stripos($column, ';') !== false ) {
+			self::$error = 'Illegal character found';
+			return false;
+		} elseif ( $column == 'remark' ) {
+			self::$error = 'Refused to get distinct records of remark';
+			return false;
+		} elseif ( $column == 'datetime' ) {
+			self::$error = 'Refused to get distinct records of datetime';
+		}
+		// prepare statement
+		$sql = "SELECT DISTINCT {$column} FROM log WHERE {$filter} ORDER BY {$column} ASC";
+		// done!
 		return R::getCol($sql, $param);
 	}
 
