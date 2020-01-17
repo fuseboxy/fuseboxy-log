@@ -44,7 +44,7 @@ if ( !empty($arguments['filterField']) ) {
 	);
 	// pill layout : display
 	ob_start();
-	include F::config('appPath').'view/global/tab.php';
+	include F::config('appPath').'view/tab/layout.php';
 	$layout['content'] = ob_get_clean();
 }
 
@@ -67,7 +67,7 @@ $tabLayout = array(
 );
 // tab layout : display
 ob_start();
-include F::config('appPath').'view/global/tab.php';
+include F::config('appPath').'view/tab/layout.php';
 $layout['content'] = ob_get_clean();
 
 
