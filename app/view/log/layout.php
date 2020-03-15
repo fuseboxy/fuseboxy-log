@@ -14,7 +14,7 @@ if ( !empty($arguments['filterField']) ) {
 			}
 			// search form
 			ob_start();
-			include F::config('appPath').'view/log/search.php';
+			include F::appPath('view/log/search.php');
 			return ob_get_clean();
 		}, $arguments),
 		'nav' => call_user_func(function($arguments){
@@ -44,7 +44,7 @@ if ( !empty($arguments['filterField']) ) {
 	);
 	// pill layout : display
 	ob_start();
-	include F::config('appPath').'view/tab/layout.php';
+	include F::appPath('view/tab/layout.php');
 	$layout['content'] = ob_get_clean();
 }
 
@@ -67,7 +67,7 @@ $tabLayout = array(
 );
 // tab layout : display
 ob_start();
-include F::config('appPath').'view/tab/layout.php';
+include F::appPath('view/tab/layout.php');
 $layout['content'] = ob_get_clean();
 
 
@@ -75,4 +75,4 @@ $layout['content'] = ob_get_clean();
 
 // global layout
 $layout['width'] = 'full';
-include F::config('appPath').'view/global/layout.php';
+include F::appPath('view/global/layout.php');

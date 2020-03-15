@@ -19,7 +19,7 @@ $scaffold = array(
 	'allowEdit' => false,
 	'allowToggle' => false,
 	'allowDelete' => Auth::activeUserInRole('SUPER'),
-	'layoutPath' => F::config('appPath').'view/log/layout.php',
+	'layoutPath' => F::appPath('view/log/layout.php'),
 	'listFilter' => call_user_func(function($arguments){
 		if ( isset($arguments['filterField']) and $arguments['filterField'] == 'remark' and !empty($arguments['filterValue']) ) {
 			return array(" {$arguments['filterField']} LIKE ? ", array('%'.trim($arguments['filterValue']).'%'));
@@ -50,11 +50,11 @@ $scaffold = array(
 		'ip' => array('label' => 'IP'),
 	),
 	'scriptPath' => array(
-		'row' => F::config('appPath').'view/log/row.php',
+		'row' => F::appPath('view/log/row.php'),
 	),
 	'pagination' => true,
 );
 
 
 // component
-include 'scaffold_controller.php';
+include F::appPath('controller/scaffold_controller.php');

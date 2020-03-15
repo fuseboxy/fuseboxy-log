@@ -49,7 +49,7 @@
 					}
 					echo nl2br($str);
 				?></td>
-				<td class="col-button text-right"><?php include F::config('appPath').'view/scaffold/row.button.php'; ?></td>
+				<td class="col-button text-right"><?php include F::appPath('view/scaffold/row.button.php'); ?></td>
 			</tr>
 		</tbody>
 	</table>
