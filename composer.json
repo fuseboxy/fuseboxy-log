@@ -1,0 +1,6 @@
+{
+	"name": "fuseboxy/fuseboxy-log",
+	"description": "Fuseboxy Log - Read and Write Log in an Easy Way",
+	"license": "MIT",
+	"require": {}
+}
