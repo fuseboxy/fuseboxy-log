@@ -63,7 +63,7 @@ class Log {
 					<string name="sim_user" />
 					<string name="entity_type" />
 					<number name="entity_id" />
-					<string name="remark" />
+					<array_or_string name="remark" />
 					<string name="ip" />
 				</structure>
 			</in>
@@ -100,6 +100,14 @@ class Log {
 			$log['ip'] = $_SERVER['HTTP_X_FORWARDED_FOR'];
 		} elseif ( !isset($log['ip']) and isset($_SERVER['REMOTE_ADDR']) ) {
 			$log['ip'] = $_SERVER['REMOTE_ADDR'];
+		}
+		// convert remark to string (when necessary)
+		if ( isset($log['remark']) and is_array($log['remark']) ) {
+			$arr = array();
+			foreach ( $log['remark'] as $key => $val ) {
+				$arr[] = !is_numeric($key) ? "[{$key}] {$val}" : $val; 
+			}
+			$log['remark'] = implode("\n", $arr);
 		}
 		// save to database
 		$bean = R::dispense('log');
