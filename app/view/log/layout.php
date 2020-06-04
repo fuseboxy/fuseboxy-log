@@ -10,7 +10,7 @@ if ( !empty($arguments['filterField']) ) {
 			}
 			// get record count
 			if ( !empty(Scaffold::$config['listFilter']) ) {
-				$totalRecordCount = R::count('log', Scaffold::$config['listFilter'][0], Scaffold::$config['listFilter'][1]);
+				$totalRecordCount = ORM::count('log', Scaffold::$config['listFilter'][0], Scaffold::$config['listFilter'][1]);
 			}
 			// search form
 			ob_start();
@@ -34,7 +34,7 @@ if ( !empty($arguments['filterField']) ) {
 					'name' => empty($item) ? '<em>(empty)</em>' : $item,
 					'url' => F::url(F::command('controller')."&filterField={$arguments['filterField']}&filterValue={$item}"),
 					'active' => ( isset($arguments['filterValue']) and $arguments['filterValue'] == $item ),
-					'remark' => R::count('log', " IFNULL({$arguments['filterField']},'') = ? ", array( empty($item) ? '' : $item )),
+					'remark' => ORM::count('log', " IFNULL({$arguments['filterField']},'') = ? ", array( empty($item) ? '' : $item )),
 					'class' => 'small',
 				);
 			}
@@ -57,7 +57,7 @@ $tabLayout = array(
 	'position' => 'left',
 	'header' => '<h3>Log</h3>',
 	'nav' => array(
-		array('name' => 'All', 'url' => F::url($fusebox->controller), 'active' => empty($arguments['filterField']), 'remark' => R::count('log')),
+		array('name' => 'All', 'url' => F::url($fusebox->controller), 'active' => empty($arguments['filterField']), 'remark' => ORM::count('log')),
 		array('name' => 'By Month', 'url' => F::url("{$fusebox->controller}&filterField=DATE_FORMAT(datetime, '%Y-%m')"), 'active' => ( isset($arguments['filterField']) and $arguments['filterField'] == "DATE_FORMAT(datetime, '%Y-%m')")),
 		array('name' => 'By User', 'url' => F::url("{$fusebox->controller}&filterField=username"), 'active' => ( isset($arguments['filterField']) and $arguments['filterField'] == 'username' )),
 		array('name' => 'By Action', 'url' => F::url("{$fusebox->controller}&filterField=action"), 'active' => ( isset($arguments['filterField']) and $arguments['filterField'] == 'action' )),
