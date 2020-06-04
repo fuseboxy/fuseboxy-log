@@ -39,10 +39,20 @@ class Log {
 		} elseif ( $column == 'datetime' ) {
 			self::$error = 'Refused to get distinct records of datetime';
 		}
-		// prepare statement
+		// get data
 		$sql = "SELECT DISTINCT {$column} FROM log WHERE {$filter} ORDER BY {$column} ASC";
+		$data = ORM::query($sql, $param);
+		if ( $data === false ) {
+			self::$error = ORM::error();
+			return false;
+		}
+		// append to result
+		foreach ( $data as $i => $row ) {
+			$vals = array_values($row);
+			$result[] = !empty($vals) ? $vals[0] : '';
+		}
 		// done!
-		return R::getCol($sql, $param);
+		return $result;
 	}
 
 
@@ -109,13 +119,16 @@ class Log {
 			}
 			$log['remark'] = implode("\n", $arr);
 		}
+		// create container
+		$bean = ORM::new('log', $log);
+		if ( $bean === false ) {
+			self::$error = ORM::error();
+			return false;
+		}
 		// save to database
-		$bean = R::dispense('log');
-		$bean->import($log);
-		$id = R::store($bean);
-		// check result
-		if ( empty($id) ) {
-			self::$error = 'Error occurred while writing log';
+		$id = ORM::save($bean);
+		if ( $id === false ) {
+			self::$error = ORM::error();
 			return false;
 		}
 		// done!
