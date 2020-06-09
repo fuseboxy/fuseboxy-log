@@ -22,7 +22,7 @@
 <div id="log-row-<?php echo $bean->id; ?>" class="log-row scaffold-row small">
 	<table class="table table-hover table-sm mb-0">
 		<tbody>
-				<td width="7%" class="col-id"><?php echo $bean->id; ?></td>
+				<td width="60" class="col-id"><?php echo $bean->id; ?></td>
 				<td width="13%" class="col-datetime">
 					<div class="col-date"><?php echo date('Y-m-d', strtotime($bean->datetime)); ?></div>
 					<div class="col-time small text-muted"><?php echo date('H:i:s', strtotime($bean->datetime)); ?></div>

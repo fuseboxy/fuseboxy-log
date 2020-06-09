@@ -31,7 +31,7 @@ $scaffold = array(
 	}, $arguments),
 	'listOrder' => 'ORDER BY datetime DESC',
 	'listField' => array(
-		'id' => '5%',
+		'id' => '60',
 		'datetime' => '13%',
 		'username|sim_user' => '13%',
 		'action|ip' => '13%',
