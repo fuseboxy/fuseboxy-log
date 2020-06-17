@@ -1,6 +1,6 @@
 <?php
 F::redirect('auth', !Auth::user());
-F::redirect(F::config('defaultCommand'), !Auth::activeUserInRole('SUPER,ADMIN'));
+F::error('Forbidden', !Auth::activeUserInRole('SUPER,ADMIN'));
 
 
 // default filter value
