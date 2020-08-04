@@ -1,6 +1,6 @@
 <?php
 F::redirect('auth', !Auth::user());
-F::error('Forbidden', !Auth::activeUserInRole('SUPER,ADMIN'));
+F::error('Forbidden', !Auth::userInRole('SUPER,ADMIN'));
 
 
 // default filter value
@@ -18,7 +18,7 @@ $scaffold = array(
 	'allowNew' => false,
 	'allowEdit' => false,
 	'allowToggle' => false,
-	'allowDelete' => Auth::activeUserInRole('SUPER'),
+	'allowDelete' => Auth::userInRole('SUPER'),
 	'layoutPath' => F::appPath('view/log/layout.php'),
 	'listFilter' => call_user_func(function($arguments){
 		if ( isset($arguments['filterField']) and $arguments['filterField'] == 'remark' and !empty($arguments['filterValue']) ) {
