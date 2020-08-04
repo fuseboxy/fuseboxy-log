@@ -100,8 +100,8 @@ class Log {
 		if ( !isset($log['datetime']) ) {
 			$log['datetime'] = date('Y-m-d H:i:s');
 		}
-		if ( !isset($log['username']) and method_exists('Auth', 'user') and Auth::user() ) {
-			$log['username'] = Auth::user('username');
+		if ( !isset($log['username']) and method_exists('Auth', 'user') and Auth::actualUser() ) {
+			$log['username'] = Auth::actualUser('username');
 		}
 		if ( !isset($log['sim_user']) and method_exists('Sim', 'user') and Sim::user() ) {
 			$log['sim_user'] = Sim::user('username');
