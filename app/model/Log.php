@@ -29,6 +29,7 @@ class Log {
 	</fusedoc>
 	*/
 	public static function getDistinct($column, $filter='1=1', $param=array()) {
+		$result = array();
 		// validation
 		if ( stripos($column, ';') !== false ) {
 			self::$error = 'Illegal character found';
