@@ -9,7 +9,7 @@ if ( !empty($arguments['filterField']) ) {
 				return false;
 			}
 			// get record count
-			if ( !empty(Scaffold::$config['listFilter']) ) {
+			if ( !empty(Scaffold::$config['listFilter']) and is_array(Scaffold::$config['listFilter']) ) {
 				$totalRecordCount = ORM::count('log', Scaffold::$config['listFilter'][0], Scaffold::$config['listFilter'][1]);
 			}
 			// search form
