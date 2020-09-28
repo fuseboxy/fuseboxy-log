@@ -43,7 +43,7 @@ $scaffold = array(
 		'datetime' => array('label' => 'Date <small class="muted">/ Time</small>'),
 		'username',
 		'sim_user',
-		'active',
+		'action',
 		'entity_id' => array('label' => 'Entity'),
 		'entity_type' => array('label' => false),
 		'remark',
