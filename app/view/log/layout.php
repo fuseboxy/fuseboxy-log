@@ -58,7 +58,7 @@ $tabLayout = array(
 	'header' => '<h3>Log</h3>',
 	'nav' => array(
 		array('name' => 'All', 'url' => F::url($fusebox->controller), 'active' => empty($arguments['filterField']), 'remark' => ORM::count('log')),
-		array('name' => 'By Month', 'url' => F::url("{$fusebox->controller}&filterField=DATE_FORMAT(datetime, '%Y-%m')"), 'active' => ( isset($arguments['filterField']) and $arguments['filterField'] == "DATE_FORMAT(datetime, '%Y-%m')")),
+		array('name' => 'By Month', 'url' => F::url("{$fusebox->controller}&filterField=CONCAT(YEAR(datetime),'-',MONTH(datetime))"), 'active' => ( isset($arguments['filterField']) and $arguments['filterField'] == "CONCAT(YEAR(datetime),'-',MONTH(datetime))")),
 		array('name' => 'By User', 'url' => F::url("{$fusebox->controller}&filterField=username"), 'active' => ( isset($arguments['filterField']) and $arguments['filterField'] == 'username' )),
 		array('name' => 'By Action', 'url' => F::url("{$fusebox->controller}&filterField=action"), 'active' => ( isset($arguments['filterField']) and $arguments['filterField'] == 'action' )),
 		array('name' => 'By Entity', 'url' => F::url("{$fusebox->controller}&filterField=entity_type"), 'active' => ( isset($arguments['filterField']) and $arguments['filterField'] == 'entity_type' )),
