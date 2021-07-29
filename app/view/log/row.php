@@ -39,7 +39,7 @@
 					<div class="col-entity_id"><?php echo $bean->entity_id; ?></div>
 					<div class="col-entity_type small text-muted"><?php echo $bean->entity_type; ?></div>
 				</td>
-				<td width="30%" class="col-remark"><?php
+				<td width="30%" class="col-remark" style="word-break: break-all;"><?php
 					$str = $bean->remark;
 					if ( isset($arguments['filterField']) and $arguments['filterField'] == 'remark' and !empty($arguments['filterValue']) ) {
 						$startPos = stripos($str, $arguments['filterValue']);
