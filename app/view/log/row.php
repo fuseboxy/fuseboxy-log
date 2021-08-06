@@ -24,6 +24,8 @@ if ( class_exists('Util') ) :
 	?><div class="col-date"><?php echo date('Y-m-d', strtotime($datetime)); ?></div><?php
 	?><div class="col-time small text-muted"><?php echo date('H:i:s', strtotime($datetime)); ?></div><?php
 	$doc->find('td.col-datetime div.col-datetime')->after( ob_get_clean() )->remove();
+	// word-break remark
+	$remark = $doc->find('td.col-remark div.col-remark')->attr('style', 'word-break: break-all;');
 	// highlight remark
 	if ( isset($arguments['filterField']) and $arguments['filterField'] == 'remark' and !empty($arguments['filterValue']) ) :
 		$remark = $doc->find('td.col-remark div.col-remark')->html();

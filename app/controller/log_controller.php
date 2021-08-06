@@ -46,7 +46,7 @@ $scaffold = array(
 		'action',
 		'entity_type' => array('label' => 'Entity'),
 		'entity_id' => array('label' => false),
-		'remark' => array('style' => 'word-wrap: break-word; word-break: break-all;'),
+		'remark',
 		'ip' => array('label' => 'IP'),
 	),
 	'scriptPath' => array(
