@@ -17,6 +17,7 @@ if ( !empty($arguments['filterField']) ) {
 			include F::appPath('view/log/search.php');
 			return ob_get_clean();
 		}, $arguments),
+		'headerClass' => 'div',
 		'nav' => call_user_func(function($arguments){
 			if ( $arguments['filterField'] == 'remark' ) {
 				return false;
