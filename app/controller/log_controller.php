@@ -44,9 +44,9 @@ $scaffold = array(
 		'username',
 		'sim_user',
 		'action',
-		'entity_id' => array('label' => false),
 		'entity_type' => array('label' => 'Entity'),
-		'remark',
+		'entity_id' => array('label' => false),
+		'remark' => array('style' => 'word-break: break-all'),
 		'ip' => array('label' => 'IP'),
 	),
 	'scriptPath' => array(
