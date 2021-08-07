@@ -56,7 +56,7 @@ if ( !empty($arguments['filterField']) ) {
 $tabLayout = array(
 	'style' => 'tabs',
 	'position' => 'left',
-	'header' => '<h3>Log</h3>',
+	'header' => 'Log',
 	'nav' => array(
 		array('name' => 'All', 'url' => F::url($fusebox->controller), 'active' => empty($arguments['filterField']), 'remark' => ORM::count('log')),
 		array('name' => 'By Month', 'url' => F::url("{$fusebox->controller}&filterField=CONCAT(YEAR(datetime),'-',MONTH(datetime))"), 'active' => ( isset($arguments['filterField']) and $arguments['filterField'] == "CONCAT(YEAR(datetime),'-',MONTH(datetime))")),
