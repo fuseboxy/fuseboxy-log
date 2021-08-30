@@ -3,5 +3,6 @@
 	"description": "Fuseboxy Log - Read and Write Log in an Easy Way",
 	"license": "MIT",
     "type": "fuseboxy-module",
-    "require": { "fuseboxy/fuseboxy-installer": "*" }
+    "require": { "fuseboxy/fuseboxy-installer": "*" },
+	"autoload": { "files": [ "app/model/Log.php" ] }
 }
