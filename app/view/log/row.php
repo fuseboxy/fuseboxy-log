@@ -34,6 +34,8 @@ if ( class_exists('Util') ) :
 	?><div class="col-date"><?php echo date('Y-m-d', strtotime($bean->datetime)); ?></div><?php
 	?><div class="col-time small text-muted"><?php echo date('H:i:s', strtotime($bean->datetime)); ?></div><?php
 	$doc->find('td.col-datetime div.col-datetime')->html(ob_get_clean());
+	// show IP in multi-lines
+	$doc->find('div.col-ip')->html(str_replace(',', '<br />', $bean->ip));
 	// set word-break of remark
 	$doc->find('td.col-remark div.col-remark')->attr('style', 'word-break: break-all;');
 	// parse remark (when necessary)
