@@ -62,6 +62,75 @@ class Log {
 	/**
 	<fusedoc>
 		<description>
+			parse log remark into array
+		</description>
+		<io>
+			<in>
+				<object name="$log">
+					<string name="remark" comments="example as followings">
+						[field_1] .....
+						[field_2] .....
+						[field_3] .....
+						[field..] .....
+					</string>
+				</object>
+			</in>
+			<out>
+				<structure name="~return~" optional="yes" oncondition="when {fieldName} not specified">
+					<string name="~fieldName~" />
+				</structure>
+				<string name="~return~" optional="yes" oncondition="when {fieldName} specified" />
+			</out>
+		</io>
+	</fusedoc>
+	*/
+	public static function parseRemark($log) {
+		$result = array();
+		// get record (when necessary)
+		if ( is_numeric($log) ) {
+			$log = ORM::get('log', $log);
+			if ( $log === false ) {
+				self::$error = 'Error loading log record ('.ORM::error().')';
+				return false;
+			} elseif ( empty($log->id) ) {
+				self::$error = 'Log record not found (id='.$log->id.')';
+				return false;
+			}
+		}
+		// validate format
+		// ===> see if first line begins with [....] string (field name)
+		$remark = trim($log->remark);
+		$allRows = array_map('trim', explode("\n", $remark));
+		$firstRow = $allRows[0] ?? '';
+		$isBeginWithFieldName = ( $firstRow[0] == '[' and strpos($firstRow, ']') > 1 );
+		// when format invalid (e.g. normal string)
+		// ===> simply return as one item array
+		if ( !$isBeginWithFieldName ) return array($remark);
+		// go through each row
+		// ===> append row to previous item instead
+		foreach ( $allRows as $i => $row ) {
+			$isBeginWithFieldName = ( $row[0] == '[' and strpos($row, ']') > 1 );
+			// when begins with field name
+			// ===> start a new item
+			if ( $isBeginWithFieldName ) {
+				list($fieldName, $rowWithoutFieldName) = explode(']', substr($row, 1), 2);
+				$result[$fieldName] = $rowWithoutFieldName;
+			// otherwise
+			// ===> append to current item
+			} else {
+				$result[$fieldName] .= "\n".$row;
+			}
+		}
+		// done!
+		return $result;
+	}
+
+
+
+
+	/**
+	<fusedoc>
+		<description>
 			write log to database
 		</description>
 		<io>
@@ -88,11 +157,11 @@ class Log {
 		$log = is_array($log) ? $log : array('action' => $log);
 		// validation
 		if ( empty($log['action']) ) {
-			self::$error = "Log [action] was not specified";
+			self::$error = 'Log [action] was not specified';
 			return false;
 		}
 		if ( !is_string($log['action']) ) {
-			self::$error = "Log [action] must be string";
+			self::$error = 'Log [action] must be string';
 			return false;
 		}
 		// modify data
@@ -120,20 +189,14 @@ class Log {
 			}
 			$log['remark'] = implode("\n", $arr);
 		}
-		// create container
-		$bean = ORM::new('log', $log);
+		// create new record
+		$bean = ORM::saveNew('log', $log);
 		if ( $bean === false ) {
-			self::$error = ORM::error();
-			return false;
-		}
-		// save to database
-		$id = ORM::save($bean);
-		if ( $id === false ) {
-			self::$error = ORM::error();
+			self::$error = 'Error creating log record ('.ORM::error().')';
 			return false;
 		}
 		// done!
-		return $id;
+		return $bean->id;
 	}
 
 
