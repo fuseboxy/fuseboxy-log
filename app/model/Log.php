@@ -77,7 +77,7 @@ class Log {
 		</io>
 	</fusedoc>
 	*/
-	public function getEntity($log) {
+	public static function getEntity($log) {
 		// get record (when necessary)
 		if ( is_numeric($log) ) {
 			$log = ORM::get('log', $log);
