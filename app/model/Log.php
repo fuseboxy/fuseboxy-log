@@ -62,6 +62,52 @@ class Log {
 	/**
 	<fusedoc>
 		<description>
+			get corresponding entity record
+		</structure>
+		<io>
+			<in>
+				<object name="$log">
+					<string name="entity_type" />
+					<number name="entity_id" />
+				</object>
+			</in>
+			<out>
+				<object name="~return~" type="~entityType~" />
+			</out>
+		</io>
+	</fusedoc>
+	*/
+	public function getEntity($log) {
+		// get record (when necessary)
+		if ( is_numeric($log) ) {
+			$log = ORM::get('log', $log);
+			if ( $log === false ) {
+				self::$error = 'Error loading log record ('.ORM::error().')';
+				return false;
+			} elseif ( empty($log->id) ) {
+				self::$error = 'Log record not found (id='.$log->id.')';
+				return false;
+			}
+		}
+		// when no entity specified
+		// ===> simply return nothing
+		if ( empty($log->entity_type) or empty($log->entity_id) ) return null;
+		// get entity record
+		$result = ORM::get($log->entity_type, $log->entity_id);
+		if ( $result === false ) {
+			self::$error = 'Error loading entity ('.ORM::error().')';
+			return false;
+		}
+		// done!
+		return $result;
+	}
+
+
+
+
+	/**
+	<fusedoc>
+		<description>
 			parse log remark into array
 		</description>
 		<io>
