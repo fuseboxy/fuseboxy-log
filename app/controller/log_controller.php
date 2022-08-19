@@ -53,7 +53,7 @@ $scaffold = array_merge([
 		'row' => F::appPath('view/log/row.php'),
 	),
 	'pagination' => true,
-], $logScaffold ?? []);
+], $logScaffold ?? $log_controller ?? []);
 
 
 // component
