@@ -13,7 +13,7 @@ if ( isset($arguments['filterField']) and !isset($arguments['filterValue']) and 
 
 
 // config
-$scaffold = array(
+$scaffold = array_merge([
 	'beanType' => 'log',
 	'allowNew' => false,
 	'allowEdit' => false,
@@ -53,7 +53,7 @@ $scaffold = array(
 		'row' => F::appPath('view/log/row.php'),
 	),
 	'pagination' => true,
-);
+], $logScaffold ?? []);
 
 
 // component
