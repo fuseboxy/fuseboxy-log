@@ -148,7 +148,7 @@ class Log {
 		$remark = trim($log->remark);
 		$allRows = array_map('trim', explode("\n", $remark));
 		$firstRow = $allRows[0] ?? '';
-		$isBeginWithFieldName = ( $firstRow[0] == '[' and strpos($firstRow, ']') > 1 );
+		$isBeginWithFieldName = ( !empty($firstRow) and $firstRow[0] == '[' and strpos($firstRow, ']') > 1 );
 		// when format invalid (e.g. normal string)
 		// ===> simply return as one item array
 		if ( !$isBeginWithFieldName ) return array($remark);
