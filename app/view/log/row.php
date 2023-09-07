@@ -38,21 +38,27 @@ if ( class_exists('Util') ) :
 	$doc->find('div.col-ip')->html(str_replace(',', '<br />', $bean->ip));
 	// set word-break of remark
 	$doc->find('td.col-remark div.col-remark')->attr('style', 'word-break: break-all;');
-	// parse remark (when necessary)
-	$remarkRows = explode("\n", $bean->remark);
-	foreach ( $remarkRows as $i => $row ) {
-		// check if row matches [XXXXX] XXXXXXXXXXX} format
-		if ( strpos($row, '[') === 0 and strpos($row, '] ') !== false ) {
-			$row = preg_replace(['/\[/', '/]/'], ['<span class="sr-only">[</span><span class="badge badge-light border mr-1">','</span><span class="sr-only">]</span>'], $row, 1);
-		}
-		// check if having before & after values
-		if ( strpos($bean->action, 'UPDATE_') === 0 and strpos($row, ' ===> ') !== false ) {
-			$row = preg_replace('/ ===> /', ' <i class="fa fa-arrow-right mx-1"><span class="sr-only">===></span></i> ', $row, 1);
-		}
-		// append modified row
-		$remarkRows[$i] = $row;
-	}
-	$doc->find('td.col-remark div.col-remark')->html(implode('<br />', $remarkRows));
+	// display parsed remark (when necessary)
+	ob_start();
+	$remarkParsed = Log::parseRemark($bean);
+	if ( $remarkParsed === false ) :
+		F::alert([ 'type' => 'danger py-1 px-2', 'message' => Log::error() ]);
+	else :
+		foreach ( $remarkParsed as $key => $val ) :
+			?><div><?php
+				// display badge
+				if ( !is_numeric($key) ) :
+					?><span class="badge badge-light border mr-1"><?php echo $key; ?></span><?php
+				endif;
+				// replace arrow in before-and-after
+				$isBeforeAndAfter = ( strpos($bean->action, 'UPDATE_') === 0 and strpos($val, ' ===> ') !== false );
+				if ( $isBeforeAndAfter ) $val = preg_replace('/ ===> /', ' <i class="fa fa-arrow-right mx-1"><span class="sr-only">===></span></i> ', $val, 1);
+				// display row
+				?><span><?php echo $val; ?></span>
+			</div><?php
+		endforeach;
+	endif;
+	$doc->find('td.col-remark div.col-remark')->html(ob_get_clean());
 	// highlight keyword in remark (when necessary)
 	if ( isset($arguments['filterField']) and $arguments['filterField'] == 'remark' and !empty($arguments['filterValue']) ) :
 		$remark = $doc->find('td.col-remark div.col-remark')->html();
