@@ -32,13 +32,13 @@ class Log {
 		$result = array();
 		// validation
 		if ( stripos($column, ';') !== false ) {
-			self::$error = 'Illegal character found';
+			self::$error = '['.__CLASS__.'::'.__FUNCTION__.'] Illegal character found';
 			return false;
 		} elseif ( $column == 'remark' ) {
-			self::$error = 'Refused to get distinct records of remark';
+			self::$error = '['.__CLASS__.'::'.__FUNCTION__.'] Refused to get distinct records of remark';
 			return false;
 		} elseif ( $column == 'datetime' ) {
-			self::$error = 'Refused to get distinct records of datetime';
+			self::$error = '['.__CLASS__.'::'.__FUNCTION__.'] Refused to get distinct records of datetime';
 		}
 		// get data
 		$sql = "SELECT DISTINCT {$column} FROM log WHERE {$filter} ORDER BY {$column} ASC";
@@ -82,10 +82,10 @@ class Log {
 		if ( is_numeric($log) ) {
 			$log = ORM::get('log', $log);
 			if ( $log === false ) {
-				self::$error = 'Error loading log record ('.ORM::error().')';
+				self::$error = '['.__CLASS__.'::'.__FUNCTION__.'] Error loading log record - '.ORM::error();
 				return false;
 			} elseif ( empty($log->id) ) {
-				self::$error = 'Log record not found (id='.$log->id.')';
+				self::$error = '['.__CLASS__.'::'.__FUNCTION__.'] Log record not found (id='.$log->id.')';
 				return false;
 			}
 		}
@@ -95,7 +95,7 @@ class Log {
 		// get entity record
 		$result = ORM::get($log->entity_type, $log->entity_id);
 		if ( $result === false ) {
-			self::$error = 'Error loading entity ('.ORM::error().')';
+			self::$error = '['.__CLASS__.'::'.__FUNCTION__.'] Error loading entity - '.ORM::error();
 			return false;
 		}
 		// done!
@@ -136,10 +136,10 @@ class Log {
 		if ( is_numeric($log) ) {
 			$log = ORM::get('log', $log);
 			if ( $log === false ) {
-				self::$error = 'Error loading log record ('.ORM::error().')';
+				self::$error = '['.__CLASS__.'::'.__FUNCTION__.'] Error loading log record - '.ORM::error();
 				return false;
 			} elseif ( empty($log->id) ) {
-				self::$error = 'Log record not found (id='.$log->id.')';
+				self::$error = '['.__CLASS__.'::'.__FUNCTION__.'] Log record not found (id='.$log->id.')';
 				return false;
 			}
 		}
@@ -203,11 +203,11 @@ class Log {
 		$log = is_array($log) ? $log : array('action' => $log);
 		// validation
 		if ( empty($log['action']) ) {
-			self::$error = 'Log [action] was not specified';
+			self::$error = '['.__CLASS__.'::'.__FUNCTION__.'] Log [action] was not specified';
 			return false;
 		}
 		if ( !is_string($log['action']) ) {
-			self::$error = 'Log [action] must be string';
+			self::$error = '['.__CLASS__.'::'.__FUNCTION__.'] Log [action] must be string';
 			return false;
 		}
 		// modify data
@@ -238,7 +238,7 @@ class Log {
 		// create new record
 		$bean = ORM::saveNew('log', $log);
 		if ( $bean === false ) {
-			self::$error = 'Error creating log record ('.ORM::error().')';
+			self::$error = '['.__CLASS__.'::'.__FUNCTION__.'] Error creating log record - '.ORM::error();
 			return false;
 		}
 		// done!
