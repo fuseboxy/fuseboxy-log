@@ -6,12 +6,10 @@ if ( !empty($arguments['filterField']) ) {
 		'position' => 'left',
 		'headerClass' => false,
 		'header' => call_user_func(function($arguments){
-			if ( $arguments['filterField'] != 'remark' ) {
-				return false;
-			}
+			if ( $arguments['filterField'] != 'remark' ) return false;
 			// get record count
 			if ( !empty(Scaffold::$config['listFilter']) and is_array(Scaffold::$config['listFilter']) ) {
-				$totalRecordCount = ORM::count('log', Scaffold::$config['listFilter'][0], Scaffold::$config['listFilter'][1]);
+				$totalRecordCount = ORM::count('log', Scaffold::$config['listFilter']['sql'], Scaffold::$config['listFilter']['param']);
 			}
 			// search form
 			ob_start();
