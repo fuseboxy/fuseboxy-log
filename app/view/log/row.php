@@ -48,7 +48,7 @@ if ( class_exists('Util') ) :
 			?><div><?php
 				// display badge
 				if ( !is_numeric($key) ) :
-					?><span class="badge badge-light border mr-1"><?php echo $key; ?></span><?php
+					?><span class="badge badge-light border mr-1"><?php echo trim($key); ?></span><?php
 				endif;
 				// replace arrow in before-and-after
 				$isBeforeAndAfter = ( strpos($bean->action, 'UPDATE_') === 0 and strpos($val, ' ===> ') !== false );

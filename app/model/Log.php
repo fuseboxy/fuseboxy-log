@@ -114,18 +114,18 @@ class Log {
 			<in>
 				<object name="$log">
 					<string name="remark" comments="example as followings">
-						[field_1] .....
-						[field_2] .....
-						[field_3] .....
-						[field..] .....
+						[badge_1] .....
+						[badge_2] .....
+						[badge_3] .....
+						[badge..] .....
 					</string>
 				</object>
 			</in>
 			<out>
-				<structure name="~return~" optional="yes" oncondition="when {fieldName} not specified">
-					<string name="~fieldName~" />
+				<structure name="~return~" optional="yes" oncondition="when {badge} not specified">
+					<string name="~badge~" />
 				</structure>
-				<string name="~return~" optional="yes" oncondition="when {fieldName} specified" />
+				<string name="~return~" optional="yes" oncondition="when {badge} specified" />
 			</out>
 		</io>
 	</fusedoc>
@@ -148,23 +148,27 @@ class Log {
 		$remark = trim($log->remark);
 		$allRows = array_map('trim', explode("\n", $remark));
 		$firstRow = $allRows[0] ?? '';
-		$isBeginWithFieldName = ( !empty($firstRow) and $firstRow[0] == '[' and strpos($firstRow, ']') > 1 );
+		$isBeginWithBadge = ( !empty($firstRow) and $firstRow[0] == '[' and strpos($firstRow, ']') > 1 );
 		// when format invalid (e.g. normal string)
 		// ===> simply return as one item array
-		if ( !$isBeginWithFieldName ) return array($remark);
+		if ( !$isBeginWithBadge ) return array($remark);
 		// go through each row
 		// ===> append row to previous item instead
 		foreach ( $allRows as $i => $row ) {
-			$isBeginWithFieldName = ( $row[0] == '[' and strpos($row, ']') > 1 );
-			// when begins with field name
+			$isBeginWithBadge = ( $row[0] == '[' and strpos($row, ']') > 1 );
+			// when begins with field/badge
 			// ===> start a new item
-			if ( $isBeginWithFieldName ) {
-				list($fieldName, $rowWithoutFieldName) = explode(']', substr($row, 1), 2);
-				$result[$fieldName] = $rowWithoutFieldName;
+			if ( $isBeginWithBadge ) {
+				// split row into badge & content
+				list($currentBadge, $rowWithoutBadge) = explode(']', substr($row, 1), 2);
+				// make badge unique (to avoid same badge name appears in different rows)
+				while ( isset($result[$currentBadge]) ) $currentBadge .= ' ';
+				// append to result
+				$result[$currentBadge] = $rowWithoutBadge;
 			// otherwise
 			// ===> append to current item
 			} else {
-				$result[$fieldName] .= "\n".$row;
+				$result[$currentBadge] .= "\n".$row;
 			}
 		}
 		// done!
