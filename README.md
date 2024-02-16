@@ -1,14 +1,7 @@
-Fuseboxy Log (v2.x)
-===================
+FUSEBOXY LOG (1.x)
+==================
 
-[Dependencies]
-Fuseboxy Framework Core (1.0.6 or higher)
-Fuseboxy Scaffold (2.x or higher)
-Fuseboxy Layout (2.x or higher)
-RedBeanPHP (5.x or higher)
-
-
-## Log Controller
-
-
-## Log Component
+## DEPENDENCIES
+Fuseboxy Core (1.x)
+Fuseboxy Scaffold (1.x)
+Fuseboxy Layout (1.x)
