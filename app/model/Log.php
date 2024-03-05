@@ -144,21 +144,20 @@ class Log {
 			}
 		}
 		// validate format
-		// ===> see if first line begins with [....] string (field name)
+		// ===> see if any line begins with [....] string (field name)
 		$remark = trim($log->remark);
 		$allRows = array_map('trim', explode("\n", $remark));
-		$firstRow = $allRows[0] ?? '';
-		$isBeginWithBadge = ( !empty($firstRow) and $firstRow[0] == '[' and strpos($firstRow, ']') > 1 );
+		$isRowBeginWithBadge = array_map(fn($row) => ( strlen($row) and $row[0] == '[' and strpos($row, ']') > 1 ), $allRows);
+		$isAnyRowBeingWithBadge = !empty(array_filter($isRowBeginWithBadge));
 		// when format invalid (e.g. normal string)
 		// ===> simply return as one item array
-		if ( !$isBeginWithBadge ) return array($remark);
+		if ( !$isAnyRowBeingWithBadge ) return array($remark);
 		// go through each row
 		// ===> append row to previous item instead
 		foreach ( $allRows as $i => $row ) {
-			$isBeginWithBadge = ( $row[0] == '[' and strpos($row, ']') > 1 );
 			// when begins with field/badge
 			// ===> start a new item
-			if ( $isBeginWithBadge ) {
+			if ( $isRowBeginWithBadge[$i] ) {
 				// split row into badge & content
 				list($currentBadge, $rowWithoutBadge) = explode(']', substr($row, 1), 2);
 				// make badge unique (to avoid same badge name appears in different rows)
@@ -167,8 +166,10 @@ class Log {
 				$result[$currentBadge] = $rowWithoutBadge;
 			// otherwise
 			// ===> append to current item
+			} elseif ( isset($currentBadge) ) {
+				$result[ $currentBadge] .= "\n".$row;
 			} else {
-				$result[$currentBadge] .= "\n".$row;
+				$result[] = $row;
 			}
 		}
 		// done!
